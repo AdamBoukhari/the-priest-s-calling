@@ -1,0 +1,52 @@
+# CI stages. Each stage is executed sequentially.
+stages:
+  - prepare
+  - build
+
+# Variables. Used in various build scripts .
+# Please note that other variables need to be set on the GitLab project level. Theses are :
+# - UNITY_LICENSE : Content of the Unity_v20XX.X.ulf file. See https://game.ci/docs/gitlab/activation
+variables:
+  BUILD_NAME: ThePriestsCalling      # Name of the Unity Build. Should be the name of the project. Careful not to include spaces. CamelCase only.
+  UNITY_DIR: $CI_PROJECT_DIR         # Absolute path to the project. See https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+  BUILD_TARGET: StandaloneWindows64  # Unity build target. See https://docs.unity3d.com/ScriptReference/BuildTarget.StandaloneWindows64.html
+  IMAGE_TARGET: windows-mono         # Unity build target name for the docker image. See https://hub.docker.com/r/unityci/editor
+  IMAGE_NAME: unityci/editor         # Name of the docker image to build the project. See https://hub.docker.com/r/unityci/editor
+  IMAGE_VERSION: 0.17.0              # Version of the docker image. See https://github.com/game-ci/docker/releases
+  GITLAB_LOG_LEVEL: warn
+
+# Parts that affect every stage. They are literally copied to each stage.
+.all: &all
+  only:
+    - main
+    - master                                                            # Execute ci only on the master branch ...
+    - develop                                                           # ... or develop branch.
+  variables:
+    GIT_DEPTH: 1                                                        # Only clone the last commit.
+  before_script:
+    - chmod +x .gitlab-before.sh .gitlab-prepare.sh .gitlab-build.sh    # Make sure that build scripts are executable.
+    - ./.gitlab-before.sh                                               # Before stage script.
+
+# Stage that prepare build environment.
+prepare:
+  <<: *all                    # Import parts that all stages uses.
+  image: alpine               # Alpine is the lightest docker image possible. Nice for this kind of quick job.
+  stage: prepare              # Preparation stage.
+  script:
+    - ./.gitlab-prepare.sh # Stage script.
+  artifacts:
+    reports:
+      dotenv: prepare.env     # Keep generated environment variables for next stages.
+
+# Stage that build Unity project.
+build:
+  <<: *all                                                        # Import parts that all stages uses.
+  image: $IMAGE_NAME:$UNITY_VERSION-$IMAGE_TARGET-$IMAGE_VERSION  # Use the right docker image for this build. The $UNITY_VERSION is determined in the "prepare" stage.
+  stage: build                                                    # Build stage.
+  script:
+    - ./.gitlab-build.sh                                       # Stage script.
+  artifacts:
+    paths:
+      - job.log
+      - $UNITY_DIR/Builds/                                        # Keep the Unity project build in the artifacts.
+    expire_in: 1 week                                             # Last build is always kept, but older ones should be deleted after one week.

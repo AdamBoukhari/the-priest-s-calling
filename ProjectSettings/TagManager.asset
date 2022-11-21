@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - MainController
+  - GameCamera
+  - Music
+  - Terrain
+  - Spikes
+  - Heart
+  - BrokenWall
+  - Interaction
+  - CameraZone
+  - Ground
+  - Box
+  - Trigger
+  - Necromancer
+  - Bag
+  - Collectible
+  - DashReset
+  - Prison
+  - Cavern
+  - Mountain
+  - Village
+  - Castle
+  - Grunt
+  - Ghost
+  - PatrolPoints
+  - PlayerHUD
+  - PauseMenu
+  - TransitionCanvas
+  - EndGame
+  - EndGameCanvas
+  - GhostProjectile
+  - Button
+  - MainMenuCanvas
+  - Canvas
+  - Yeti
+  - Fireball
+  - YetiShield
+  - AchievementPopUpCanvas
+  - bat
+  - Transition
+  - YetiMusic
+  - MinLimitX
+  - MaxLimitX
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - Sensor
+  - Water
+  - UI
+  - Ground
+  - Enemies
+  - Player
+  - Wall
+  - IgnorePlayer
+  - Box
+  - Platform
+  - Slope
+  - Yeti
+  - Snowball
+  - Fireball
+  - GhostProjectile
+  - Necromancer
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
